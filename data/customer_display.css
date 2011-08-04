@@ -1,0 +1,11 @@
+#qrcode {
+    padding: 25px;
+    height: 400px;
+    width: 400px;
+}
+#payment_info {
+    display: none;
+}
+#payment_received {
+    display: none;
+}
