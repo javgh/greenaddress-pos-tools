@@ -1,0 +1,6 @@
+= Getting started =
+
+- install dependencies: python-qrencode, python-qt4
+- add "server=1" (but not daemon=1) to bitcoin.conf and configure rpcuser & rpcpassword
+- edit RPC_URL in controller.py 
+- run: python pos-tool.py
