@@ -8,7 +8,7 @@ function show_payment_info(amount, conversion, address, imgdata) {
     $("#amount").text(amount);
     $("#conversion").text(conversion);
     $("#address").text(address);
-    $("#qrcode").attr("data", imgdata)
+    $("#qrcode").attr("src", imgdata)
 
     $("#idle").hide();
     $("#payment_info").show();
