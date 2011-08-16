@@ -69,3 +69,12 @@ class Controller:
             self.merchant_gui.update_status(msg)
             self.customer_display.evaluate_java_script('show_payment_received()')
             self.current_address = ""
+
+    def toggle_fullscreen_mode(self):
+        if not self.customer_display.isFullScreen():
+            self.customer_display.showFullScreen()
+        else:
+            self.customer_display.showNormal()
+
+    def clear_customer_display(self):
+        self.customer_display.evaluate_java_script('show_idle()')
