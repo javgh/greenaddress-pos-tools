@@ -13,11 +13,20 @@ class Controller:
     def __init__(self, settings):
         self.bitcoind = AuthServiceProxy(settings['rpc_url'])
         self.current_address = ""
+        self.exchange_rate = 0.0
+        self.exchange_rate_source = ""
 
     def run(self):
         self.app = QtGui.QApplication([])
+
+        font = self.app.font()
+        font.setPointSize(12)
+        self.app.setFont(font)
+
         self.app.connect(self.app, QtCore.SIGNAL('_new_transaction_received(PyQt_PyObject)'),
                 self._new_transaction_received)
+        self.app.connect(self.app, QtCore.SIGNAL('_exchange_rate_updated(PyQt_PyObject)'),
+                self._exchange_rate_updated)
 
         self.merchant_gui = MerchantGUI(self)
         self.merchant_gui.show()
@@ -25,7 +34,21 @@ class Controller:
         self.customer_display.show()
         self.app.exec_()
 
-    def init_new_transaction(self, amount):
+    def init_new_transaction(self, amount, currency):
+        if currency == "USD":
+            usd_amount = amount
+            if self.exchange_rate != 0:
+                amount = round(usd_amount / self.exchange_rate, 8)
+            else:
+                amount = 0
+
+            conversion = "Converted from %.2f USD at an exchange rate \
+                    of %.4f USD to 1 BTC (Source: %s)" \
+                    % (usd_amount, self.exchange_rate,
+                            self.exchange_rate_source)
+        else:
+            conversion = ""
+
         self.current_address = self.bitcoind.getnewaddress("Point of Sale")
         self.merchant_gui.update_status("Looking for a transaction to %s..." %
                 self.current_address)
@@ -33,7 +56,7 @@ class Controller:
         amount_str = self.format_btc_amount(amount)
         imgdata = self.create_img_data(self.current_address, amount_str)
         js = 'show_payment_info("%s", "%s", "%s", "%s")' % \
-                ('%s BTC' % amount_str, '...',
+                ('%s BTC' % amount_str, conversion,
                         self.current_address, imgdata)
 
         self.customer_display.evaluate_java_script(js)
@@ -77,3 +100,12 @@ class Controller:
 
     def clear_customer_display(self):
         self.customer_display.evaluate_java_script('show_idle()')
+
+    # this is thread-safe, as long as it is called from a QThread
+    def exchange_rate_updated(self, rate, source):
+        self.app.emit(QtCore.SIGNAL('_exchange_rate_updated(PyQt_PyObject)'),
+                (rate, source))
+
+    def _exchange_rate_updated(self, data):
+        (self.exchange_rate, self.exchange_rate_source) = data
+        self.merchant_gui.update_exchange_rate(self.exchange_rate)
