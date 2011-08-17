@@ -9,11 +9,9 @@ from authproxy import AuthServiceProxy, JSONRPCException
 from merchantgui import MerchantGUI
 from customerdisplay import CustomerDisplay
 
-RPC_URL = "http://rpcuser:localaccessonly@127.0.0.1:8332"
-
 class Controller:
-    def __init__(self):
-        self.bitcoind = AuthServiceProxy(RPC_URL)
+    def __init__(self, settings):
+        self.bitcoind = AuthServiceProxy(settings['rpc_url'])
         self.current_address = ""
 
     def run(self):
@@ -55,16 +53,17 @@ class Controller:
         return re.sub("\.?0+$", "", s)
 
     # this is thread-safe, as long as it is called from a QThread
-    def new_transaction_received(self, txid, output_addresses, from_instawallet):
+    def new_transaction_received(self, txid, output_addresses,
+            from_green_address, green_address_msg):
         # emit signal, so we can process this on the Qt GUI thread
         self.app.emit(QtCore.SIGNAL('_new_transaction_received(PyQt_PyObject)'),
-                (txid, output_addresses, from_instawallet))
+                (txid, output_addresses, from_green_address, green_address_msg))
 
     def _new_transaction_received(self, data):
-        (_, output_addresses, from_instawallet) = data
+        (_, output_addresses, from_green_address, green_address_msg) = data
         if self.current_address != "" and self.current_address in output_addresses:
             msg = "Transaction to %s received." % self.current_address
-            if from_instawallet: msg += " Verified by Instawallet."
+            if from_green_address: msg += " " + green_address_msg
 
             self.merchant_gui.update_status(msg)
             self.customer_display.evaluate_java_script('show_payment_received()')
