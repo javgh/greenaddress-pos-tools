@@ -1,11 +1,93 @@
-#qrcode {
-    padding: 25px;
-    height: 400px;
-    width: 400px;
+body {
+    background: url("images/bg-header.png") repeat-x;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
 }
+
+#footer {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    width: 100%;
+    z-index: -99;
+
+    background: url("images/bg-footer.png") repeat-x;
+    height: 166px;
+}
+
+#logo_wrapper {
+    position: relative;
+    top: 400px;
+}
+
+#logo {
+    display: block;
+    margin: auto;
+}
+
+img.logo_small {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+}
+
+.details {
+    width: 85%;
+    position: relative;
+    top: 250px;
+    margin: auto;
+}
+
+#details_image {
+    float: left;
+}
+
+#details_text {
+    width: 100%;
+    text-align: center;
+}
+
+#detail_text1 {
+    padding: 60px 0 0 0;
+    font-size: 36pt;
+}
+
+#detail_text2 {
+    padding: 20px 0 0 0;
+    font-size: 16pt;
+}
+
+#detail_table {
+    padding: 50px 0 0 0;
+    text-align: left;
+    font-size: 16pt;
+}
+
+#detail_table table {
+    margin: auto;
+}
+
+td.col_content {
+    text-align: right;
+}
+
+#received_msg {
+    padding: 150px 0px 0px 0px;
+    text-align: center;
+    font-size: 26pt;
+}
+
+#debug {
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+    display: none;
+}
+
 #payment_info {
     display: none;
 }
+
 #payment_received {
     display: none;
 }

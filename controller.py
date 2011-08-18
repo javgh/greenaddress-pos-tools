@@ -42,12 +42,10 @@ class Controller:
             else:
                 amount = 0
 
-            conversion = "Converted from %.2f USD at an exchange rate \
-                    of %.4f USD to 1 BTC (Source: %s)" \
-                    % (usd_amount, self.exchange_rate,
-                            self.exchange_rate_source)
+            conversion = '["%.2f USD", "%.4f USD", "%s"]' % (usd_amount,
+                            self.exchange_rate, self.exchange_rate_source)
         else:
-            conversion = ""
+            conversion = '-1'
 
         self.current_address = self.bitcoind.getnewaddress("Point of Sale")
         self.merchant_gui.update_status("Looking for a transaction to %s..." %
@@ -55,7 +53,7 @@ class Controller:
 
         amount_str = self.format_btc_amount(amount)
         imgdata = self.create_img_data(self.current_address, amount_str)
-        js = 'show_payment_info("%s", "%s", "%s", "%s")' % \
+        js = 'show_payment_info("%s", %s, "%s", "%s")' % \
                 ('%s BTC' % amount_str, conversion,
                         self.current_address, imgdata)
 
@@ -64,7 +62,7 @@ class Controller:
     def create_img_data(self, address, amount_str):
         (_, size, img) = qrencode.encode("bitcoin:%s?amount=%s&label=" %
                 (address, amount_str))
-        if size < 300: img = img.resize((300, 300), Image.NEAREST)
+        if size < 400: img = img.resize((400, 400), Image.NEAREST)
 
         buf = StringIO()
         img.save(buf, format='PNG')
