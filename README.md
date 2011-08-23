@@ -3,18 +3,22 @@
 - install dependencies: python-qrencode, python-qt4
 - add "server=1" (but not daemon=1) to bitcoin.conf and configure rpcuser & rpcpassword
 - create the file $HOME/.greenaddress-pos-tool with this contents:
-    {
-        "exchange_rate_ticker": {
-            "source": "MtGox.com", 
-            "url": "https://mtgox.com/api/0/data/ticker.php",
-            "field": "last", 
-            "interval": 5 
-        }, 
-        "green_addresses": {
-            "1CDysWzQ5Z4hMLhsj4AKAEFwrgXRC8DqRN": "Verified by Instawallet."
-        }, 
-        "rpc_url": "http://rpcuser:rpcpassword@127.0.0.1:8332"
-    }
+
+````
+{
+    "exchange_rate_ticker": {
+        "source": "MtGox.com", 
+        "url": "https://mtgox.com/api/0/data/ticker.php",
+        "field": "last", 
+        "interval": 5 
+    }, 
+    "green_addresses": {
+        "1CDysWzQ5Z4hMLhsj4AKAEFwrgXRC8DqRN": "Verified by Instawallet."
+    }, 
+    "rpc_url": "http://rpcuser:rpcpassword@127.0.0.1:8332"
+}
+````
+
 - run: python pos-tool.py
 
 You should see two windows popping up: The merchant back end and the
