@@ -4,7 +4,8 @@ This is a Bitcoin point of sale application. It was mainly written to
 demonstrate the use of the green address feature, but can also be used
 independently of that. It is written in Python and works in combination with a
 standard Bitcoin client. It is targeted at standard PC hardware, e.g. laptop
-(used by merchant) + external monitor (facing the customer).
+(used by merchant) + external monitor (facing the customer). See a video of the
+system in action at http://www.youtube.com/watch?v=o84SfChQ-S8 .
 
 #### Screenshots
 
