@@ -29,8 +29,9 @@ system in action at http://www.youtube.com/watch?v=o84SfChQ-S8 .
 {
     "exchange_rate_ticker": {
         "source": "MtGox.com", 
+        "currency": "USD",
         "url": "https://mtgox.com/api/0/data/ticker.php",
-        "field": "last", 
+        "fields": ["ticker", "last"], 
         "interval": 5 
     }, 
     "green_addresses": {

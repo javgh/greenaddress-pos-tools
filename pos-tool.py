@@ -30,8 +30,8 @@ else:
 controller = Controller(settings)
 green_address_check = GreenAddressCheck(settings['green_addresses'], controller.new_transaction_received)
 ticker_settings = settings['exchange_rate_ticker']
-ticker = Ticker(ticker_settings['source'], ticker_settings['url'],
-        ticker_settings['field'], ticker_settings['interval'],
+ticker = Ticker(ticker_settings['source'], ticker_settings['currency'], ticker_settings['url'],
+        ticker_settings['fields'], ticker_settings['interval'],
         controller.exchange_rate_updated)
 
 green_address_check.start()

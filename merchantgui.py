@@ -2,9 +2,10 @@ from PyQt4 import QtGui
 from PyQt4 import QtCore
 
 class MerchantGUI(QtGui.QWidget):
-    def __init__(self, controller, parent=None):
+    def __init__(self, controller, currency, parent=None):
         QtGui.QWidget.__init__(self, parent)
         self.controller = controller
+	self.currency = currency
         self.init_ui()
 
     def init_ui(self):
@@ -21,7 +22,7 @@ class MerchantGUI(QtGui.QWidget):
 
         self.combo = QtGui.QComboBox()
         self.combo.addItem("BTC")
-        self.combo.addItem("USD")
+        self.combo.addItem(self.currency)
 
         self.rate = QtGui.QLabel()
         self.rate.setText("Current exchange rate: ...        ")
@@ -71,7 +72,7 @@ class MerchantGUI(QtGui.QWidget):
         self.status.setText(message)
 
     def update_exchange_rate(self, rate):
-        self.rate.setText("Current exchange rate: %f USD" % rate)
+        self.rate.setText("Current exchange rate: %f %s" % (rate, self.currency))
 
     def closeEvent(self, event):
         event.accept()

@@ -15,6 +15,7 @@ class Controller:
         self.current_address = ""
         self.exchange_rate = 0.0
         self.exchange_rate_source = ""
+	self.currency = settings['exchange_rate_ticker']['currency']
 
     def run(self):
         self.app = QtGui.QApplication([])
@@ -28,7 +29,7 @@ class Controller:
         self.app.connect(self.app, QtCore.SIGNAL('_exchange_rate_updated(PyQt_PyObject)'),
                 self._exchange_rate_updated)
 
-        self.merchant_gui = MerchantGUI(self)
+        self.merchant_gui = MerchantGUI(self, self.currency)
         self.merchant_gui.show()
         self.customer_display = CustomerDisplay('data/customer_display.html')
         self.customer_display.show()
