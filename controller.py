@@ -36,15 +36,16 @@ class Controller:
         self.app.exec_()
 
     def init_new_transaction(self, amount, currency):
-        if currency == "USD":
-            usd_amount = amount
+        if currency != "BTC":
+            cur_amount = amount
             if self.exchange_rate != 0:
-                amount = round(usd_amount / self.exchange_rate, 8)
+                amount = round(cur_amount / self.exchange_rate, 8)
             else:
                 amount = 0
 
-            conversion = '["%.2f USD", "%.4f USD", "%s"]' % (usd_amount,
-                            self.exchange_rate, self.exchange_rate_source)
+            conversion = '["%.2f %s", "%.4f %s", "%s"]' % (cur_amount, 
+                            currency, self.exchange_rate, self.exchange_rate_source,
+                            currency)
         else:
             conversion = '-1'
 
