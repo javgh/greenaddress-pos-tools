@@ -37,7 +37,8 @@ system in action at http://www.youtube.com/watch?v=o84SfChQ-S8 .
     "green_addresses": {
         "1CDysWzQ5Z4hMLhsj4AKAEFwrgXRC8DqRN": "Verified by Instawallet."
     }, 
-    "rpc_url": "http://rpcuser:rpcpassword@127.0.0.1:8332"
+    "rpc_url": "http://rpcuser:rpcpassword@127.0.0.1:8332",
+    "single-screen-mode": true
 }
 ````
 

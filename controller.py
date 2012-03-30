@@ -16,6 +16,7 @@ class Controller:
         self.exchange_rate = 0.0
         self.exchange_rate_source = ""
 	self.currency = settings['exchange_rate_ticker']['currency']
+	self.singleScreenMode = settings['single-screen-mode']
 
     def run(self):
         self.app = QtGui.QApplication([])
@@ -31,11 +32,16 @@ class Controller:
 
         self.merchant_gui = MerchantGUI(self, self.currency)
         self.merchant_gui.show()
-        self.customer_display = CustomerDisplay('data/customer_display.html')
-        self.customer_display.show()
+	self.customer_display = CustomerDisplay('data/customer_display.html', self.singleScreenMode)
+	if not self.singleScreenMode:
+		self.customer_display.show()
         self.app.exec_()
 
     def init_new_transaction(self, amount, currency):
+	if self.singleScreenMode:
+		self.customer_display.show()
+		if not self.customer_display.isFullScreen():
+		    self.customer_display.showFullScreen()
         if currency != "BTC":
             cur_amount = amount
             if self.exchange_rate != 0:
