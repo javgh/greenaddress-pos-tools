@@ -29,14 +29,16 @@ system in action at http://www.youtube.com/watch?v=o84SfChQ-S8 .
 {
     "exchange_rate_ticker": {
         "source": "MtGox.com", 
+        "currency": "USD",
         "url": "https://mtgox.com/api/0/data/ticker.php",
-        "field": "last", 
+        "fields": ["ticker", "last"], 
         "interval": 5 
     }, 
     "green_addresses": {
         "1CDysWzQ5Z4hMLhsj4AKAEFwrgXRC8DqRN": "Verified by Instawallet."
     }, 
-    "rpc_url": "http://rpcuser:rpcpassword@127.0.0.1:8332"
+    "rpc_url": "http://rpcuser:rpcpassword@127.0.0.1:8332",
+    "single-screen-mode": true
 }
 ````
 
