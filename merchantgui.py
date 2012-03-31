@@ -5,7 +5,7 @@ class MerchantGUI(QtGui.QWidget):
     def __init__(self, controller, currency, parent=None):
         QtGui.QWidget.__init__(self, parent)
         self.controller = controller
-	self.currency = currency
+        self.currency = currency
         self.init_ui()
 
     def init_ui(self):
