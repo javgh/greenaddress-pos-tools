@@ -16,7 +16,8 @@ class Controller:
         self.exchange_rate = 0.0
         self.exchange_rate_source = ""
         self.currency = settings['exchange_rate_ticker']['currency']
-        self.singleScreenMode = settings['single-screen-mode']
+        self.single_screen_mode = settings['single_screen_mode']
+        self.green_addresses = settings['green_addresses']
 
     def run(self):
         self.app = QtGui.QApplication([])
@@ -32,13 +33,13 @@ class Controller:
 
         self.merchant_gui = MerchantGUI(self, self.currency)
         self.merchant_gui.show()
-        self.customer_display = CustomerDisplay('data/customer_display.html', self.singleScreenMode)
-        if not self.singleScreenMode:
+        self.customer_display = CustomerDisplay('data/customer_display.html', self.single_screen_mode)
+        if not self.single_screen_mode:
             self.customer_display.show()
         self.app.exec_()
 
     def init_new_transaction(self, amount, currency):
-        if self.singleScreenMode:
+        if self.single_screen_mode:
             self.customer_display.show()
             if not self.customer_display.isFullScreen():
                 self.customer_display.showFullScreen()
@@ -50,8 +51,8 @@ class Controller:
                 amount = 0
 
             conversion = '["%.2f %s", "%.4f %s", "%s"]' % (cur_amount, 
-                            currency, self.exchange_rate, self.exchange_rate_source,
-                            currency)
+                            currency, self.exchange_rate, currency,
+                            self.exchange_rate_source)
         else:
             conversion = '-1'
 
@@ -82,21 +83,61 @@ class Controller:
         return re.sub("\.?0+$", "", s)
 
     # this is thread-safe, as long as it is called from a QThread
-    def new_transaction_received(self, txid, output_addresses,
-            from_green_address, green_address_msg):
+    def new_transaction_received(self, txid):
+        if not hasattr(self, 'app'): return  # not yet read
         # emit signal, so we can process this on the Qt GUI thread
         self.app.emit(QtCore.SIGNAL('_new_transaction_received(PyQt_PyObject)'),
-                (txid, output_addresses, from_green_address, green_address_msg))
+                txid)
 
-    def _new_transaction_received(self, data):
-        (_, output_addresses, from_green_address, green_address_msg) = data
-        if self.current_address != "" and self.current_address in output_addresses:
-            msg = "Transaction to %s received." % self.current_address
-            if from_green_address: msg += " " + green_address_msg
+    def _new_transaction_received(self, txid):
+        # check if we are waiting for a payment
+        if self.current_address == "": return
 
-            self.merchant_gui.update_status(msg)
-            self.customer_display.evaluate_java_script('show_payment_received()')
-            self.current_address = ""
+        # check if the txid looks sane before passing it
+        # to bitcoind (for security reasons; might be overly
+        # paranoid, but can't hurt)
+        if re.search("^[a-f0-9]*$", txid) == None: return
+
+        tx_info = self.bitcoind.gettransaction(txid)
+        output_addresses = []
+        for detail in tx_info['details']:
+            output_addresses.append(detail['address'])
+        if self.current_address not in output_addresses: return
+
+        msg = "Transaction to %s received." % self.current_address
+        (from_green_address, green_address_msg) = self.green_address_check(txid)
+        if from_green_address: msg += " " + green_address_msg
+
+        self.merchant_gui.update_status(msg)
+        self.customer_display.evaluate_java_script('show_payment_received()')
+        self.current_address = ""
+
+    def green_address_check(self, txid):
+        found = False
+        msg = ""
+
+        origins = self.get_origins(txid)
+        for origin in origins:
+            if origin in self.green_addresses:
+                found = True
+                msg = self.green_addresses[origin]
+                break
+
+        return (found, msg)
+
+    def get_origins(self, txid):
+        try:
+            origins = []
+            raw_tx = self.bitcoind.getrawtransaction(txid, 1)
+            vins = raw_tx['vin']
+            for vin in vins:
+                raw_tx = self.bitcoind.getrawtransaction(vin['txid'], 1)
+                for vout in raw_tx['vout']:
+                    if vin['vout'] == vout['n']:
+                        origins.extend(vout['scriptPubKey']['addresses'])
+            return origins
+        except JSONRPCException:
+            return []
 
     def toggle_fullscreen_mode(self):
         if not self.customer_display.isFullScreen():
@@ -109,6 +150,7 @@ class Controller:
 
     # this is thread-safe, as long as it is called from a QThread
     def exchange_rate_updated(self, rate, source):
+        if not hasattr(self, 'app'): return  # not yet read
         self.app.emit(QtCore.SIGNAL('_exchange_rate_updated(PyQt_PyObject)'),
                 (rate, source))
 

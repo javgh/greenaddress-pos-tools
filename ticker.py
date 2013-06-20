@@ -12,6 +12,7 @@ class Ticker(QThread):
         self.callback = callback
 
     def run(self):
+        self.sleep(5)   # give GUI time to initialize
         while True:
             try:
                 f = urllib.urlopen(self.url)
