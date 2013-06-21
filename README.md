@@ -35,7 +35,9 @@ rpcuser=rpcuser
 rpcpassword=rpcpassword
 ````
 
-Then start bitcoind like this (-reindex is only needed on the first run):
+Then start bitcoind like listed below (-reindex is only needed on the first
+run). Make sure that the queue-tx utility is executable, so that bitcoind can
+call it when new transactions are received.
 
 ````
 ./bitcoind -reindex -walletnotify="/path/to/greenaddress-pos-tools/utils/queue-tx %s"
