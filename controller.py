@@ -10,7 +10,8 @@ from merchantgui import MerchantGUI
 from customerdisplay import CustomerDisplay
 
 class Controller:
-    def __init__(self, settings):
+    def __init__(self, settings, nfc_broadcast):
+        self.nfc_broadcast = nfc_broadcast
         self.bitcoind = AuthServiceProxy(settings['rpc_url'])
         self.current_address = ""
         self.exchange_rate = 0.0
@@ -67,6 +68,9 @@ class Controller:
                         self.current_address, imgdata)
 
         self.customer_display.evaluate_java_script(js)
+
+        btc_uri = "bitcoin:%s?amount=%s" % (self.current_address, amount_str)
+        self.nfc_broadcast.set_btc_uri(btc_uri)
 
     def create_img_data(self, address, amount_str):
         (_, size, img) = qrencode.encode("bitcoin:%s?amount=%s&label=" %

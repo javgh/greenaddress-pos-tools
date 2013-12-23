@@ -1,0 +1,4 @@
+A copy of the library 'nfcpy' is included in this repository to simplify
+installation (subdirectory nfc). The library is also available at
+https://launchpad.net/nfcpy and licensed under the European Union Public Licence
+(EUPL).
