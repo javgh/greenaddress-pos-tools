@@ -49,18 +49,18 @@ img.logo_small {
 
 #detail_text1 {
     padding: 60px 0 0 0;
-    font-size: 36pt;
+    font-size: 42pt;
 }
 
 #detail_text2 {
     padding: 20px 0 0 0;
-    font-size: 16pt;
+    font-size: 20pt;
 }
 
 #detail_table {
     padding: 50px 0 0 0;
     text-align: left;
-    font-size: 16pt;
+    font-size: 20pt;
 }
 
 #detail_table table {
@@ -74,7 +74,7 @@ td.col_content {
 #received_msg {
     padding: 150px 0px 0px 0px;
     text-align: center;
-    font-size: 26pt;
+    font-size: 52pt;
 }
 
 #debug {
