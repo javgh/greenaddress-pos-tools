@@ -5,6 +5,7 @@ from controller import Controller
 from ticker import Ticker
 from txmonitor import TxMonitor
 from nfcbroadcast import NFCBroadcast
+from bluetoothreceiver import BluetoothReceiver
 
 # check for configuration file
 settings = { 'rpc_url': 'http://rpcuser:rpcpassword@127.0.0.1:8332'
@@ -35,6 +36,9 @@ else:
 
 nfc_broadcast = NFCBroadcast()
 controller = Controller(settings, nfc_broadcast)
+bluetooth_receiver = BluetoothReceiver(
+                        controller.bluetooth_available,
+                        controller.new_transaction_via_bluetooth)
 tx_monitor = TxMonitor(controller.new_transaction_received)
 ticker_settings = settings['exchange_rate_ticker']
 ticker = Ticker(ticker_settings['source'], ticker_settings['currency'], ticker_settings['url'],
@@ -42,6 +46,7 @@ ticker = Ticker(ticker_settings['source'], ticker_settings['currency'], ticker_s
         controller.exchange_rate_updated)
 
 nfc_broadcast.start()
+bluetooth_receiver.start()
 tx_monitor.start()
 ticker.start()
 controller.run()

@@ -19,6 +19,7 @@ class Controller:
         self.currency = settings['exchange_rate_ticker']['currency']
         self.single_screen_mode = settings['single_screen_mode']
         self.green_addresses = settings['green_addresses']
+        self.bt_addr = None
 
     def run(self):
         self.app = QtGui.QApplication([])
@@ -62,19 +63,25 @@ class Controller:
                 self.current_address)
 
         amount_str = self.format_btc_amount(amount)
-        imgdata = self.create_img_data(self.current_address, amount_str)
+        btc_uri = self.create_btc_uri(self.current_address, amount_str,
+                                        self.bt_addr)
+        imgdata = self.create_img_data(btc_uri)
         js = 'show_payment_info("%s", %s, "%s", "%s")' % \
                 ('%s BTC' % amount_str, conversion,
                         self.current_address, imgdata)
 
         self.customer_display.evaluate_java_script(js)
-
-        btc_uri = "bitcoin:%s?amount=%s" % (self.current_address, amount_str)
         self.nfc_broadcast.set_btc_uri(btc_uri)
 
-    def create_img_data(self, address, amount_str):
-        (_, size, img) = qrencode.encode("bitcoin:%s?amount=%s&label=" %
-                (address, amount_str))
+    def create_btc_uri(self, address, amount_str, bt_addr):
+        btc_uri = "bitcoin:%s?amount=%s" % (address, amount_str)
+        if bt_addr != None:
+            bt_addr_stripped = bt_addr.translate(None, ':')
+            btc_uri += "&bt=%s" % bt_addr_stripped
+        return btc_uri
+
+    def create_img_data(self, btc_uri):
+        (_, size, img) = qrencode.encode(btc_uri)
         if size < 400: img = img.resize((400, 400), Image.NEAREST)
 
         buf = StringIO()
@@ -115,6 +122,18 @@ class Controller:
         self.merchant_gui.update_status(msg)
         self.customer_display.evaluate_java_script('show_payment_received()')
         self.current_address = ""
+
+    def bluetooth_available(self, bt_addr):
+        self.bt_addr = bt_addr
+
+    def new_transaction_via_bluetooth(self, tx):
+        try:
+            self.bitcoind.sendrawtransaction(tx)
+        except JSONRPCException:
+            # ignore, if this did not work - we might
+            # have already received the transaction in
+            # a different way
+            pass
 
     def green_address_check(self, txid):
         found = False
