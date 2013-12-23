@@ -78,6 +78,6 @@ if __name__ == '__main__':
     nfc_broadcast = NFCBroadcast()
     nfc_broadcast.start()
 
-    nfc_broadcast.set_btc_uri('bitcoin:16mj2Veiw6rWHBDn4dN8rAAsRJog7EooYF?amount=0.001')
+    nfc_broadcast.set_btc_uri('bitcoin:16mj2Veiw6rWHBDn4dN8rAAsRJog7EooYF?amount=0.0001')
     while True:
-        time.sleep(1)
+        time.sleep(60)
