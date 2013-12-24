@@ -4,7 +4,11 @@ This is a Bitcoin point of sale application. It was mainly written to
 demonstrate the use of the green address feature, but can also be used
 independently of that. It is written in Python and works in combination with the
 standard Bitcoin-Qt client. It is targeted at standard PC hardware, e.g. laptop
-(used by merchant) + external monitor (facing the customer). See a video of the
+(used by merchant) + external monitor (facing the customer). The main mode of
+operation is displaying a QR code with a Bitcoin URI to the customer and
+listening - via Bitcoin-Qt - on the network for a matching Bitcoin transaction.
+But the software also support the use of NFC hardware to transmit the Bitcoin
+URI as well as receiving incoming transactions via Bluetooth. See a video of the
 system in action at http://www.youtube.com/watch?v=o84SfChQ-S8 .
 
 #### Screenshots
@@ -45,7 +49,7 @@ call it when new transactions are received.
 
 Afterwards you are ready to start the Python app:
 
-- install dependencies: python-qrencode, python-qt4, python-zmq
+- install dependencies: python-bluez, python-qrencode, python-qt4, python-zmq
 - create the file $HOME/.greenaddress-pos-tool with this contents (or let the
   app create this default configuration file when first starting up):
 
@@ -81,6 +85,51 @@ receives something, it changes the display to read "Payment received". If the
 payment was done via Bridgewalker's green address, it will add the phrase
 "Verified by Bridgewalker". The merchant is expected to use their Bitcoin client
 to see if the correct amount was sent.
+
+#### NFC support
+
+The software supports the use of NFC hardware. If an NFC device is detected, it
+will be used to offer the currently displayed Bitcoin address and amount to any
+client that comes within range.
+
+Any device supported by the library nfcpy ( https://launchpad.net/nfcpy ) should
+be fine (see http://nfcpy.readthedocs.org/en/latest/overview.html ). This code
+was tested with the NFC reader 'SCM SCL3711'.
+
+To get this reader running on Linux, you need to ensure that the permissions are
+set properly. You might want to create udev rules like the following (e.g. as
+/etc/udev/rules.d/52-nfcdev.rules):
+
+````
+SUBSYSTEM=="usb", ACTION=="add", ATTRS{idVendor}=="04e6", ATTRS{idProduct}=="5591", GROUP="plugdev" # SCM SCL-3711
+SUBSYSTEM=="usb", ACTION=="add", ATTRS{idVendor}=="054c", ATTRS{idProduct}=="06c1", GROUP="plugdev" # Sony RC-S380
+````
+
+Load the new udev rules via 'service udev reload'. Afterwards make sure, that
+you are a member of the 'plugdev' group, to be able to access the device. You
+might also need to prevent the kernel module 'pn533' from grabbing and blocking
+the device:
+
+````
+rmmod pn533
+echo "blacklist pn533" > /etc/modprobe.d/blacklist-nfc.conf
+````
+
+The following clients are known to be able to receive Bitcoin URIs via NFC:
+Schildbach Wallet, Bridgewalker.
+
+#### Bluetooth support
+
+The software will use Bluetooth to listen for serialized Bitcoin transactions.
+To this end, it will advertise a Bluetooth service using the UUID
+3357a7bb-762d-464a-8d9a-dca592d57d5b (compatible with Schildbach Wallet and
+Bridgewalker). It will furthermore include its Bluetooth MAC as an additional
+parameter in all Bitcoin URIS (&bt=...). Clients that support this convention
+can then transmit a serialized Bitcoin transaction via Bluetooth using a simple
+format first specified by the Schildbach wallet.
+
+The following clients are known to be able to transmit Bitcoin transactions via
+Bluetooth in this manner: Schildbach Wallet, Bridgewalker.
 
 #### Green address technique
 
