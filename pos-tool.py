@@ -45,8 +45,15 @@ ticker = Ticker(ticker_settings['source'], ticker_settings['currency'], ticker_s
         ticker_settings['fields'], ticker_settings['interval'],
         controller.exchange_rate_updated)
 
+# start various threads
 nfc_broadcast.start()
 bluetooth_receiver.start()
 tx_monitor.start()
 ticker.start()
+
+# enter main event loop
 controller.run()
+
+# clean up - NFCBroadcast uses an external process,
+# which we need to terminate
+nfc_broadcast.shutdown()
