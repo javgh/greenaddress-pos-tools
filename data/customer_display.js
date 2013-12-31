@@ -1,7 +1,5 @@
 function show_idle() {
-    $("#idle").show();
-    $("#payment_info").hide();
-    $("#payment_received").hide();
+    transition_to("#idle");
 }
 
 function show_payment_info(amount, conversion, address, imgdata) {
@@ -18,13 +16,18 @@ function show_payment_info(amount, conversion, address, imgdata) {
         $("#detail_table").show();
     }
 
-    $("#idle").hide();
-    $("#payment_info").show();
-    $("#payment_received").hide();
+    transition_to("#payment_info");
 }
 
 function show_payment_received() {
-    $("#idle").hide();
-    $("#payment_info").hide();
-    $("#payment_received").show();
+    transition_to("#payment_received");
 }
+
+function transition_to(replacement_div) {
+    $(active_div).fadeOut("fast", function() {
+        $(replacement_div).fadeIn("fast");
+    });
+    active_div = replacement_div;
+}
+
+var active_div = "#idle";

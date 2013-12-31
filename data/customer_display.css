@@ -17,53 +17,65 @@ body {
 
 #logo_wrapper {
     position: relative;
-    top: 400px;
+    top: 300px;
 }
 
 #logo {
     display: block;
     margin: auto;
+    width: 750px;
 }
 
 img.logo_small {
     position: absolute;
-    bottom: 20px;
-    right: 20px;
+    width: 350px;
+    bottom: 30px;
+    right: 30px;
 }
 
 .details {
     width: 85%;
     position: relative;
-    top: 250px;
+    top: 140px;
     margin: auto;
 }
 
-#details_image {
-    float: left;
-}
-
-#details_text {
+#details_main {
+    padding: 0 0 90px 0;
+    font-size: 65pt;
     width: 100%;
     text-align: center;
 }
 
-#detail_text1 {
-    padding: 60px 0 0 0;
-    font-size: 42pt;
+#details_left {
+    float: left;
 }
 
-#detail_text2 {
+#details_left img {
+    width: 350px;
+}
+
+#details_right {
+    width: 100%;
+    text-align: center;
+}
+
+#details_filler {
+    height: 50px;
+}
+
+#details_address {
     padding: 20px 0 0 0;
-    font-size: 20pt;
+    font-size: 22pt;
 }
 
-#detail_table {
+#details_table {
     padding: 50px 0 0 0;
     text-align: left;
-    font-size: 20pt;
+    font-size: 22pt;
 }
 
-#detail_table table {
+#details_table table {
     margin: auto;
 }
 
