@@ -8,8 +8,9 @@ standard Bitcoin-Qt client. It is targeted at standard PC hardware, e.g. laptop
 operation is displaying a QR code with a Bitcoin URI to the customer and
 listening - via Bitcoin-Qt - on the network for a matching Bitcoin transaction.
 But the software also support the use of NFC hardware to transmit the Bitcoin
-URI as well as receiving incoming transactions via Bluetooth. See a video of the
-system in action at http://www.youtube.com/watch?v=o84SfChQ-S8 .
+URI as well as receiving incoming transactions via Bluetooth. See videos of the
+system in action at http://www.youtube.com/watch?v=o84SfChQ-S8 (using QR codes)
+and https://www.youtube.com/watch?v=mguRpvf3aMc (using NFC).
 
 #### Screenshots
 
