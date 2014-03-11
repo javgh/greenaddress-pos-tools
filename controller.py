@@ -170,6 +170,7 @@ class Controller:
 
     def clear_customer_display(self):
         self.customer_display.evaluate_java_script('show_idle()')
+        self.merchant_gui.update_status("System ready.");
 
     # this is thread-safe, as long as it is called from a QThread
     def exchange_rate_updated(self, rate, source):
